@@ -1,0 +1,86 @@
+version: '3.8'
+
+networks:
+    symfony_docker_net:
+
+services:
+    server:
+        build:
+            context: .
+            dockerfile: ./docker/server/Dockerfile
+        container_name: 'server'
+        expose:
+            - "9000"
+            - "9003"
+        ports:
+            - '80:80'
+        working_dir: /var/www/html
+        # Uncomment these lines to prioritize it
+        #environment:
+        # Use mysql
+        #    - 'DATABASE_URL=mysql://${DB_USER}:${DB_PASS}@db_server:${DB_PORT_INSIDE}/${DB_NAME}?serverVersion=${DB_SERVER_VERSION}&charset=${DB_CHARSET}'
+        # Use mariadb
+        #    - 'DATABASE_URL=mysql://${DB_USER}:${DB_PASS}@db_server:${DB_PORT_INSIDE}/${DB_NAME}?serverVersion=${DB_SERVER}-${DB_SERVER_VERSION}'
+        # Use postgresql
+        #    - 'DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db_server:${DB_PORT_INSIDE}/${DB_NAME}?serverVersion=${DB_SERVER_VERSION}&charset=${DB_CHARSET}'
+        volumes:
+            - ./codebase:/var/www/html
+            - ./docker/server/apache/sites-enabled:/etc/apache2/sites-enabled
+            - ./docker/server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini
+            - ./docker/xdebug/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+        depends_on:
+            - db_server
+        links:
+            - db_server
+        networks:
+            - symfony_docker_net
+
+    db_server:
+        image: '${DB_SERVER}:${DB_SERVER_VERSION}'
+        # Uncomment if using mariadb or mysql 
+        command: --default-authentication-plugin=mysql_native_password
+        container_name: 'db_server'
+        ports:
+            - '${DB_PORT_OUTSIDE}:${DB_PORT_INSIDE}'
+        restart: unless-stopped
+        environment:
+        # Uncomment if using mariadb or mysql 
+            MYSQL_DATABASE:         '${DB_NAME}'
+            MYSQL_USER:             '${DB_USER}'
+            MYSQL_PASSWORD:         '${DB_PASS}'
+            MYSQL_ROOT_PASSWORD:    '${DB_ROOT_PASS}'
+        # Uncomment if using postgres 
+            # POSTGRES_DB:          '${DB_NAME}'
+            # POSTGRES_USER:        '${DB_USER}'
+            # POSTGRES_PASSWORD:    '${DB_PASS}'
+        volumes:
+            - db_data:${DB_VOLUME}
+        networks:
+            - symfony_docker_net
+
+    db_admin:
+        image: phpmyadmin/phpmyadmin:5
+        container_name: 'db-admin'
+        ports:
+            - '${APP_DB_ADMIN_PORT}:80'
+        environment:
+            PMA_HOST: db_server
+        depends_on:
+            - db_server
+        volumes:
+            - db_admin_data:/var/www/html
+        networks:
+            - symfony_docker_net
+
+    mailcatcher:
+        container_name: 'mailcatcher'
+        networks:
+            - symfony_docker_net
+        image: yappabe/mailcatcher
+        ports:
+            - 1025:1025
+            - 1080:1080
+
+volumes:
+    db_data:
+    db_admin_data:
