@@ -1,0 +1,7 @@
+<ul class="js-clone-nav d-none d-lg-inline-none text-start site-menu float-end">
+    <li><a href="{{ url('app_home') }}">Home</a></li>
+    <li class="has-children">
+        <a href="#!">Categories</a>
+        {{ render(controller('App\\Controller\\HomeController::categories', {'n': 1})) }}
+    </li>
+</ul>
