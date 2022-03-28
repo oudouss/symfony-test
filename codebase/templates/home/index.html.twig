@@ -156,7 +156,7 @@
                 <div class="post-entry d-block small-post-entry-v">
                     <div class="thumbnail">
                         <a href="{{ url('app_article', {'slug': article.slug}) }}">
-                            <img src="{{ article.cover }}" alt="{{ article.titre }}" class="img-fluid">
+                            <img src="{{ article.scover }}" alt="{{ article.titre }}" class="img-fluid">
                         </a>
                     </div>
                     <div class="content">
@@ -168,7 +168,7 @@
                         <p>{{ article.intro | slice(0, 100)~'...' }}</p>
                         <a href="#" class="post-author d-flex align-items-center">
                             <div class="author-pic">
-                                <img src="https://i.pravatar.cc/45" alt="Image">
+                                <img src="{{ article.publisher.avatar }}" alt="author">
                             </div>
                             <div class="text">
                                 <strong>{{ article.publisher.fullName }} </strong>

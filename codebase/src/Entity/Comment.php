@@ -33,14 +33,14 @@ class Comment
     private $message;
 
     /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $visible=false;
+
+    /**
      * @ORM\Column(type="datetime_immutable")
      */
     private $createdAt;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
-     */
-    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Article::class, inversedBy="comments")
@@ -88,6 +88,18 @@ class Comment
         return $this;
     }
 
+    public function getVisible(): ?bool
+    {
+        return $this->visible;
+    }
+
+    public function setVisible(bool $visible): self
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -96,18 +108,6 @@ class Comment
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }

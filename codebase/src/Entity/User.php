@@ -58,14 +58,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $titre;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="user")
+     * @ORM\Column(type="string", length=255)
      */
-    private $comments;
+    private $avatar;
+
 
     public function __construct()
     {
         $this->articles = new ArrayCollection();
-        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -228,32 +228,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return "$this->first_name $this->last_name";
     }
 
+
     /**
-     * @return Collection<int, Comment>
+     * Get the value of avatar
      */
-    public function getComments(): Collection
+    public function getAvatar()
     {
-        return $this->comments;
+        return $this->avatar;
     }
 
-    public function addComment(Comment $comment): self
+    /**
+     * Set the value of avatar
+     *
+     * @return  self
+     */
+    public function setAvatar($avatar)
     {
-        if (!$this->comments->contains($comment)) {
-            $this->comments[] = $comment;
-            $comment->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComment(Comment $comment): self
-    {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getUser() === $this) {
-                $comment->setUser(null);
-            }
-        }
+        $this->avatar = $avatar;
 
         return $this;
     }

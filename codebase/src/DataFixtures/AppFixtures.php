@@ -4,9 +4,10 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\User;
-use App\Entity\Article;
-use App\Entity\Category;
 use DateTimeImmutable;
+use App\Entity\Article;
+use App\Entity\Comment;
+use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -16,6 +17,7 @@ class AppFixtures extends Fixture
 {
     private const CATEGORIES = 5;
     private const ARTICLES = 20;
+    private const COMMENTS = 50;
 
     private $faker;
 
@@ -43,7 +45,8 @@ class AppFixtures extends Fixture
             ->setFirstName('SYSTEM')
             ->setLastName('ADMIN')
             ->setTitre('SYSADMIN')
-            ->setRoles(['ROLE_ADMIN']);
+            ->setRoles(['ROLE_ADMIN'])
+            ->setAvatar('https://i.pravatar.cc/45');
         $hashedPassword = $this->hasher->hashPassword($admin, '0000');
         $admin->setPassword($hashedPassword);
         $manager->persist($admin);
@@ -53,6 +56,7 @@ class AppFixtures extends Fixture
         $user->setLastName('FRANZEN');
         $user->setTitre('CEO and Founder');
         $user->setEmail('user@example.com');
+        $user->setAvatar('https://i.pravatar.cc/45');
         $hashedPassword = $this->hasher->hashPassword($user, '0000');
         $user->setPassword($hashedPassword);
         $manager->persist($user);
@@ -73,7 +77,7 @@ class AppFixtures extends Fixture
             {
                 $visible = (($j % 2 == 0) ? true : false);
                 $publisher = (($j % 2 == 0) ? $user : $admin);
-                
+                $rand=\rand(1, 100);
                 $article = new Article();
                 $articleTitre = $this->faker->sentence(\rand(4, 7));
                 $article
@@ -82,16 +86,33 @@ class AppFixtures extends Fixture
                 ->setIntro($this->faker->paragraph(2, false))
                 ->setContent(
                     \sprintf(
-                    '<p>%s</p>',
-                    \implode('</p><p>', $this->faker->paragraphs(\rand(3, 5)))
-                     )
-                )
+                        '<p>%s</p>',
+                        \implode('</p><p>', $this->faker->paragraphs(\rand(5, 15)))
+                        )
+                        )
                 ->setVisible($visible)
                 ->setPublisher($publisher)
                 ->setCreatedAt(new DateTimeImmutable())
-                ->setCover('https://picsum.photos/200/300?random='.\rand(1, 100))
+                ->setScover('https://picsum.photos/200/300?random='.$rand)
+                ->setCover('https://picsum.photos/800/514?random='.$rand)
                 ->setCategory($category);
                 $manager->persist($article);
+                // load comments
+                for ($k = 1; $k <= rand(1,self::COMMENTS -1) ; $k++)
+                {
+                    $visiblecomment = (($k % 2 == 0) ? true : false);
+                    $comment = new Comment();
+                    $comment
+                    ->setUserName($this->faker->name())
+                    ->setUserEmail($this->faker->email())
+                    ->setVisible($visiblecomment)
+                    ->setMessage($this->faker->paragraph(2, false))
+                    ->setCreatedAt(new DateTimeImmutable())
+                    ->setArticle($article)
+                    ;
+                    $manager->persist($comment);
+                }
+
 
             }
         }

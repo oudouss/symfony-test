@@ -42,6 +42,11 @@ class Article
     /**
      * @ORM\Column(type="text")
      */
+    private $scover;
+    
+    /**
+     * @ORM\Column(type="text")
+     */
     private $cover;
 
     /**
@@ -213,6 +218,26 @@ class Article
                 $comment->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of scover
+     */
+    public function getScover()
+    {
+        return $this->scover;
+    }
+
+    /**
+     * Set the value of scover
+     *
+     * @return  self
+     */
+    public function setScover($scover)
+    {
+        $this->scover = $scover;
 
         return $this;
     }

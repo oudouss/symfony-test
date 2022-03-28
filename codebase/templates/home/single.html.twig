@@ -5,19 +5,22 @@
 <div class="section post-section pt-5">
     <div class="container">
         <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+            {% include 'partials/_flashes.html.twig' %}
+            </div>
             <div class="col-lg-8">
                 <div class="text-center">
-                    <img src="https://i.pravatar.cc/45" alt="Image" class="author-pic img-fluid rounded-circle mx-auto">
+                    <img src="{{ article.publisher.avatar }}" alt="author" class="author-pic img-fluid rounded-circle mx-auto">
                 </div>
                 <span class="d-block text-center">{{ article.publisher.fullName }} </span>
                 <span class="date d-block text-center small text-uppercase text-black-50 mb-5">{{ article.createdAt | date('M, d Y')}}</span>
                 <h2 class="heading text-center">{{ article.titre }}</h2>
                 <p class="lead mb-4 text-center">{{ article.intro}}</p>
-                <img src="{{ article.cover }}" alt="{{ article.titre }}"  class="img-fluid rounded mb-4" style="width:100%;">
+                <img src="{{ article.cover }}" alt="{{ article.titre }}"  class="img-fluid rounded mb-4">
                 <div>
                 {{ article.content | striptags }}
                 </div>
-                <div class="row mt-5 pt-5 border-top">
+                <div class="row mt-5 pt-5 pb-5 border-top border-bottom">
                     <div class="col-12">
                         <span class="fw-bold text-black small mb-1">Share</span>
                         <ul class="social list-unstyled">
@@ -28,11 +31,57 @@
                         </ul>
                     </div>
                 </div>
-                {# //TODO: adding comment section #}
+                <div class="row justify-content-center">
+                    <div class="col-lg-12 text-center">
+                        <h2 class="heading">Comments</h2>
+                    </div>
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <div class="col-lg-12">
+                                <div class="post-entry d-md-flex small-horizontal mb-5">
+                                    {# <div class="me-md-5 thumbnail mb-3 mb-md-0"></div> #}
+                                    <div class="content">
+                                        <div class="post-meta mb-3">
+                                            <span class="date">{{ comment.createdAt | date('M, d Y')}}</span>
+                                        </div>
+                                        <a href="#" class="post-author d-flex align-items-center">
+                                            {# <div class="author-pic">
+                                                <img src="https://i.pravatar.cc/45" alt="Image">
+                                            </div> #}
+                                            <div class="text">
+                                                <strong>{{ comment.userName}}</strong>
+                                                <span>{{ comment.userEmail}}</span>
+                                            </div>
+                                        </a>
+                                        {# <h2 class="heading">Commented:</h2> #}
+                                        <p>{{ comment.message}}</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <span class="col-lg-12 d-block text-center">No comments have been posted for this article yet.</span>
+                    {% endif %}
+                    <div class="col-lg-12 ">
+                        <h2 class="row mt-5 pt-5 border-top">Add your own feedback</h2>
+                        {{ form_start(form) }}
+                        {% if not user  %}
+                            {{ form_row(form.userName) }}
+                            {{ form_row(form.userEmail) }}
+                        {% endif %}
+                            {{ form_row(form.message) }} 
+                        <div class="form-group d-grid">
+                            <input type="submit" class="btn btn-dark" value="Submit Comment">
+                        </div>
+                        {{ form_end(form, {'render_rest':false}) }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 <div class="section pb-0">
     <div class="container">
         <div class="row">
@@ -41,58 +90,6 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-lg-12">
-                <div class="post-entry d-md-flex small-horizontal mb-5">
-                    <div class="me-md-5 thumbnail mb-3 mb-md-0">
-                        <img src="https://picsum.photos/250/160" alt="Image" class="img-fluid">
-                    </div>
-                    <div class="content">
-                        <div class="post-meta mb-3">
-                            <a href="#" class="category">Business</a>, <a href="#" class="category">Travel</a> &mdash;
-                            <span class="date">July 2, 2020</span>
-                        </div>
-                        <h2 class="heading"><a href="single.html">Your most unhappy customers are your greatest source
-                            of learning.</a></h2>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
-                            there live the blind texts.</p>
-                        <a href="#" class="post-author d-flex align-items-center">
-                            <div class="author-pic">
-                                <img src="https://i.pravatar.cc/45" alt="Image">
-                            </div>
-                            <div class="text">
-                                <strong>Sergy Campbell</strong>
-                                <span>Author, 26 published post</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="post-entry d-md-flex small-horizontal mb-5">
-                    <div class="me-md-5 thumbnail mb-3 mb-md-0">
-                        <img src="https://picsum.photos/250/160" alt="Image" class="img-fluid">
-                    </div>
-                    <div class="content">
-                        <div class="post-meta mb-3">
-                            <a href="#" class="category">Business</a>, <a href="#" class="category">Travel</a> &mdash;
-                            <span class="date">July 2, 2020</span>
-                        </div>
-                        <h2 class="heading"><a href="single.html">Your most unhappy customers are your greatest source
-                            of learning.</a></h2>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
-                            there live the blind texts.</p>
-                        <a href="#" class="post-author d-flex align-items-center">
-                            <div class="author-pic">
-                                <img src="https://i.pravatar.cc/45" alt="Image">
-                            </div>
-                            <div class="text">
-                                <strong>Sergy Campbell</strong>
-                                <span>Author, 26 published post</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
             <div class="col-lg-12">
                 <div class="post-entry d-md-flex small-horizontal mb-5">
                     <div class="me-md-5 thumbnail mb-3 mb-md-0">

@@ -45,22 +45,36 @@ class CommentRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Comment[] Returns an array of Comment objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Comment[] Returns an array of Comment objects
+    */
+    
+    public function findVisible()
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+        ->andWhere('c.visible = :val')
+        ->setParameter('val', 1)
+        ->orderBy('c.createdAt', 'ASC')
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+    
+    /**
+     * @return Comment[] Returns an array of Comment objects
+    */
+    public function findVisibleByArticle($article)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.article = :article')
+            ->setParameter('article', $article)
+            ->andWhere('c.visible = :visible')
+            ->setParameter('visible', 1)
+            ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Comment
