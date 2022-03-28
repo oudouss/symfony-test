@@ -18,7 +18,7 @@
                 <p class="lead mb-4 text-center">{{ article.intro}}</p>
                 <img src="{{ article.cover }}" alt="{{ article.titre }}"  class="img-fluid rounded mb-4">
                 <div>
-                {{ article.content | striptags }}
+                {{ article.content | raw }}
                 </div>
                 <div class="row mt-5 pt-5 pb-5 border-top border-bottom">
                     <div class="col-12">

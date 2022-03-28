@@ -5,6 +5,7 @@ namespace App\Controller;
 use DateTimeImmutable;
 use App\Entity\Article;
 use App\Entity\Comment;
+use App\Service\Mailer;
 use App\Entity\Category;
 use App\Form\CommentFormType;
 use App\Repository\ArticleRepository;
@@ -45,7 +46,8 @@ class HomeController extends AbstractController
             Article $article, 
             EntityManagerInterface $em, 
             CommentRepository $commentRepo,
-            RequestStack $requestStack
+            RequestStack $requestStack,
+            Mailer $mailer
     ): Response
     {
         $comment = new Comment();
@@ -62,25 +64,31 @@ class HomeController extends AbstractController
         }
         if ($form->isSubmitted() && $form->isValid()) 
         { 
-            if ( $user )
-            {
+            try {
+                if ( $user )
+                {
+                    $comment
+                    ->setUserName($user['name'])
+                    ->setUserEmail($user['mail']);
+                    
+                }else
+                {
+                    $session->set('username', $form->getData()->getUserName());
+                    $session->set('usermail', $form->getData()->getUserEmail());
+                }
                 $comment
-                ->setUserName($user['name'])
-                ->setUserEmail($user['mail']);
-                
-            }else
-            {
-                $session->set('username', $form->getData()->getUserName());
-                $session->set('usermail', $form->getData()->getUserEmail());
+                    ->setArticle($article)
+                    ->setCreatedAt(new DateTimeImmutable());
+    
+                $em->persist($comment);
+                $mailer->notifyAdmin($comment->getUserEmail(), $comment->getMessage(), $article->getTitre());
+                $em->flush();
+                $this->addFlash('success', 'Thank you for your feedback! Your comment will be visible once approuved.');
+            } catch (\Throwable $ex) {
+                $this->addFlash('danger', 'Something went wrong.');
+            } finally {
+                return $this->redirectToRoute('app_article', ['slug' => $article->getSlug()]);
             }
-            $comment
-                ->setArticle($article)
-                ->setCreatedAt(new DateTimeImmutable());
-
-            $em->persist($comment);
-            $em->flush();
-            $this->addFlash('success', 'Comment added successfully. Thank you!');
-            return $this->redirectToRoute('app_article', ['slug' => $article->getSlug()]);
         }
 
         return $this->render('home/single.html.twig',[
