@@ -88,7 +88,10 @@ class HomeController extends AbstractController
 
         return $this->render('home/single.html.twig',[
             'article' => $article,
-            'comments' => $commentRepo->findVisibleByArticle($article),
+            'comments' => $commentRepo->findBy([
+                'article'=>$article,
+                'visible'=>true,
+            ]),
             'form' => $form->createView(),
             'user' => $user
         ]);
