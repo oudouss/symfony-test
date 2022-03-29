@@ -144,6 +144,63 @@ OR
 symfony console messenger:consume -vv async
 ```
 
+## Comment Command:
+
+Examples:
+
+### To render a list of all comments
+```
+php bin/console app:article:comment 
+
+OR
+
+symfony console app:article:comment
+```
+
+### To render a list of comments by article #ID
+```
+php bin/console app:article:comment -a#ID
+
+OR
+
+symfony console app:article:comment -a#ID
+```
+### To render a list of comments by comments #ID (separate multiple ids with a space)
+```
+php bin/console app:article:comment [-c#ID1 -c#ID2 -c#ID3 etc...] etc
+
+OR
+
+symfony console app:article:comment -c#ID
+```
+
+### To set the comments visibility (--show to make it visible | --no-show otherwise)
+```
+php bin/console app:article:comment [-c#ID1 -c#ID2 -c#ID3 etc...] [--show | --no-show]
+
+OR
+
+symfony console app:article:comment -c#ID [--show | --no-show]
+
+NOTE: When setting comments visiblity updated records are not shown after execution. To change that you can pass a flag '-l'.
+If the -l flag is set the list of comments will be rendered:
+
+php bin/console app:article:comment [-c#ID1 -c#ID2 -c#ID3 etc...] [--show | --no-show] -l
+
+OR
+
+symfony console app:article:comment -c#ID [--show | --no-show] -l
+```
+
+### For Full command description pass --help to it
+```
+php bin/console app:article:comment --help
+
+OR
+
+symfony console app:article:comment --help
+```
+
 That's all! 
 
 Go to [http://localhost](http://localhost) to see the app

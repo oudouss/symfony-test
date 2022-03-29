@@ -53,7 +53,7 @@ class CommentRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
         ->andWhere('c.visible = :val')
-        ->setParameter('val', 1)
+        ->setParameter('val', true)
         ->orderBy('c.createdAt', 'ASC')
         ->getQuery()
         ->getResult()
@@ -63,13 +63,13 @@ class CommentRepository extends ServiceEntityRepository
     /**
      * @return Comment[] Returns an array of Comment objects
     */
-    public function findVisibleByArticle($article)
+    public function findByArticleAndVisibility($article, $visible)
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.article = :article')
             ->setParameter('article', $article)
             ->andWhere('c.visible = :visible')
-            ->setParameter('visible', 1)
+            ->setParameter('visible', $visible)
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
