@@ -8,11 +8,13 @@ use App\Entity\Comment;
 use App\Service\Mailer;
 use App\Entity\Category;
 use App\Form\CommentFormType;
+use Symfony\Component\Mime\Email;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -54,32 +56,22 @@ class HomeController extends AbstractController
         $form = $this->createForm(CommentFormType::class, $comment);
         $form->handleRequest($request);
         $session = $requestStack->getSession();
-        $user = false;
-        if ($session->has('username') && $session->has('usermail'))
-        {
-            $user = [
-                'name' => $session->get('username'),
-                'mail' => $session->get('usermail'),
-            ];
-        }
+        $user = ( $session->has('username') && $session->has('usermail') ) ? true: false;
+
         if ($form->isSubmitted() && $form->isValid()) 
         { 
-            try {
-                if ( $user )
-                {
-                    $comment
-                    ->setUserName($user['name'])
-                    ->setUserEmail($user['mail']);
-                    
-                }else
-                {
-                    $session->set('username', $form->getData()->getUserName());
-                    $session->set('usermail', $form->getData()->getUserEmail());
+            $comment->setArticle($article)->setCreatedAt(new DateTimeImmutable());
+            if ( $user )
+            {
+                if ($session->get('username') !=null && $session->get('usermail') !=null ) {
+                    $comment->setUserName($session->get('username'))->setUserEmail($session->get('usermail'));
                 }
-                $comment
-                    ->setArticle($article)
-                    ->setCreatedAt(new DateTimeImmutable());
-    
+            }else{
+                $session->set('username', $form->getData()->getUserName());
+                $session->set('usermail', $form->getData()->getUserEmail());
+            }
+            
+            try {
                 $em->persist($comment);
                 $mailer->notifyAdmin($comment->getUserEmail(), $comment->getMessage(), $article->getTitre());
                 $em->flush();

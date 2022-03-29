@@ -76,7 +76,7 @@ services:
         container_name: 'mailcatcher'
         networks:
             - symfony_docker_net
-        image: yappabe/mailcatcher
+        image: schickling/mailcatcher
         ports:
             - 1025:1025
             - 1080:1080

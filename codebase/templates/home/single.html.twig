@@ -39,21 +39,16 @@
                         {% for comment in comments %}
                             <div class="col-lg-12">
                                 <div class="post-entry d-md-flex small-horizontal mb-5">
-                                    {# <div class="me-md-5 thumbnail mb-3 mb-md-0"></div> #}
                                     <div class="content">
                                         <div class="post-meta mb-3">
                                             <span class="date">{{ comment.createdAt | date('M, d Y')}}</span>
                                         </div>
                                         <a href="#" class="post-author d-flex align-items-center">
-                                            {# <div class="author-pic">
-                                                <img src="https://i.pravatar.cc/45" alt="Image">
-                                            </div> #}
                                             <div class="text">
                                                 <strong>{{ comment.userName}}</strong>
                                                 <span>{{ comment.userEmail}}</span>
                                             </div>
                                         </a>
-                                        {# <h2 class="heading">Commented:</h2> #}
                                         <p>{{ comment.message}}</p>
                                     </div>
 
@@ -66,11 +61,13 @@
                     <div class="col-lg-12 ">
                         <h2 class="row mt-5 pt-5 border-top">Add your own feedback</h2>
                         {{ form_start(form) }}
-                        {% if not user  %}
+                        {% if user %}
+                            {{ form_row(form.message) }} 
+                        {% else %}
                             {{ form_row(form.userName) }}
                             {{ form_row(form.userEmail) }}
-                        {% endif %}
                             {{ form_row(form.message) }} 
+                        {% endif %}
                         <div class="form-group d-grid">
                             <input type="submit" class="btn btn-dark" value="Submit Comment">
                         </div>
