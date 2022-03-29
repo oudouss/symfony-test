@@ -71,10 +71,13 @@ class HomeController extends AbstractController
                 $session->set('usermail', $form->getData()->getUserEmail());
             }
             
+            $em->persist($comment);
+            $mail=$comment->getUserEmail();
+            $message=$comment->getMessage();
+            $titre=$article->getTitre();
+            $em->flush();
             try {
-                $em->persist($comment);
-                $mailer->notifyAdmin($comment->getUserEmail(), $comment->getMessage(), $article->getTitre());
-                $em->flush();
+                $mailer->notifyAdmin($mail, $message, $titre);
                 $this->addFlash('success', 'Thank you for your feedback! Your comment will be visible once approuved.');
             } catch (\Throwable $ex) {
                 $this->addFlash('danger', 'Something went wrong.');
