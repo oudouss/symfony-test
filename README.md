@@ -97,7 +97,7 @@ Before running (docker-compose up -d --build) command to start up your container
 #NOTE: You don't have to replace ( ${DB_USER} , ${DB_PASS} , ${DB_PORT_INSIDE}, ${DB_NAME} , ${DB_SERVER} , ${DB_SERVER_VERSION} , ${DB_CHARSET} ).
 ```
 
-## Run database migrations and load fake data:
+## Run database migrations load fake data and start queue worker:
 
 NOTE: Every command related to the symfony should be executed in the server container: 
 ```
@@ -132,6 +132,16 @@ php bin/console d:f:l --no-interaction
 OR
 
 symfony console d:f:l --no-interaction
+```
+
+Start queue worker
+
+```
+php bin/console messenger:consume -vv async
+
+OR
+
+symfony console messenger:consume -vv async
 ```
 
 That's all! 
