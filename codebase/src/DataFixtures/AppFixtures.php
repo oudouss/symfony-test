@@ -93,7 +93,6 @@ class AppFixtures extends Fixture
                 ->setVisible($visible)
                 ->setPublisher($publisher)
                 ->setCreatedAt(new DateTimeImmutable())
-                ->setScover('https://picsum.photos/200/300?random='.$rand)
                 ->setCover('https://picsum.photos/800/514?random='.$rand)
                 ->setCategory($category);
                 $manager->persist($article);

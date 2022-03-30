@@ -1,8 +1,5 @@
-{% for elements in categories %}
-       
-    <ul class="dropdown">
-    {% for category in elements %}
-        <li><a  href="{{ url('app_category', {'slug': category.slug}) }}">{{ category.titre }}</a></li>
-    {% endfor %}
-    </ul> 
+<ul class="dropdown">
+{% for category in categories %}
+    <li><a  href="{{ url('app_category', {'slug': category.slug}) }}">{{ category.titre }}</a></li>
 {% endfor %}
+</ul> 

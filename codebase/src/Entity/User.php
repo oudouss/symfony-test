@@ -56,6 +56,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255)
      */
     private $titre;
+    /**
+     * @var int
+     */
+    private $publishedCount;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -236,7 +240,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->avatar;
     }
-
+    
     /**
      * Set the value of avatar
      *
@@ -245,7 +249,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar($avatar)
     {
         $this->avatar = $avatar;
-
+        
         return $this;
     }
+
+    /**
+     * Get the value of publishedCount
+     *
+     * @return  int
+     */
+    public function getPublishedCount()
+    {
+        return count($this->articles);
+    }
+
 }

@@ -51,13 +51,7 @@ class CommentRepository extends ServiceEntityRepository
     
     public function findVisible()
     {
-        return $this->createQueryBuilder('c')
-        ->andWhere('c.visible = :val')
-        ->setParameter('val', true)
-        ->orderBy('c.createdAt', 'ASC')
-        ->getQuery()
-        ->getResult()
-        ;
+        return $this->findBy(['visible' => true],['createdAt' => 'DESC']);
     }
     
     /**

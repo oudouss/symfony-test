@@ -16,15 +16,16 @@ class CommentFormType extends AbstractType
     {
         $builder
             ->add('userName', TextType::class, [
-                'label' => 'Your name',
+                'label' => false,
             ])
             ->add('userEmail', EmailType::class, [
-                'label' => 'Your email',
+                'label' => false,
             ])
             ->add('message', TextareaType::class, [
+                'label' => false,
                 'attr' => [
                     'rows'  => 20,
-                    'style' =>"height: 304px;"
+                    'style' =>"height: 200x;"
                 ],
             ])
         ;

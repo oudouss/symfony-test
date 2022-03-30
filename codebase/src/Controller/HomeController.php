@@ -32,7 +32,7 @@ class HomeController extends AbstractController
     public function index(ArticleRepository $repository, Request $request): Response
     {
 
-        $articles = $repository->findVisible();
+        $articles = $repository->findBy(['visible' => true],['createdAt' => 'DESC'], 6);
         return $this->render('home/index.html.twig',[
             'articles' => $articles,
         ]);
@@ -56,7 +56,7 @@ class HomeController extends AbstractController
         $form = $this->createForm(CommentFormType::class, $comment);
         $form->handleRequest($request);
         $session = $requestStack->getSession();
-        $user = ( $session->has('username') && $session->has('usermail') ) ? true: false;
+        $user = ( $session->has('username') && $session->has('usermail') ) ? true : false;
 
         if ($form->isSubmitted() && $form->isValid()) 
         { 
@@ -78,16 +78,16 @@ class HomeController extends AbstractController
             $em->flush();
             try {
                 $mailer->notifyAdmin($mail, $message, $titre);
-                $this->addFlash('success', 'Thank you for your feedback! Your comment will be visible once approuved.');
+                $this->addFlash('success', 'Success: Thank you for your feedback! Your comment will be visible once approuved.');
             } catch (\Throwable $ex) {
-                $this->addFlash('danger', 'Something went wrong.');
+                $this->addFlash('danger', 'Error: Something went wrong!');
             } finally {
                 return $this->redirectToRoute('app_article', ['slug' => $article->getSlug()]);
             }
         }
-
         return $this->render('home/single.html.twig',[
             'article' => $article,
+            'relatedArticles' => $article->getCategory()->getArticles(),
             'comments' => $commentRepo->findBy([
                 'article'=>$article,
                 'visible'=>true,
@@ -99,29 +99,21 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/categories", name="app_categories")
-     * @param int $n
+     *
+     * @param CategoryRepository $CatRepository
      * @return Response
-     */
-
-    public function categories(int $n, CategoryRepository $CatRepository): Response
+    */
+    public function categories(CategoryRepository $CatRepository): Response
     {
-        $output = [];
-        $categories = $CatRepository->findAll();
-        $count = \count($categories);
-        $output[0] = \array_slice($categories, 0, $count / 2);
-        $output[1] = \array_slice($categories, ($count / 2));
-
         return $this->render('categories/list.html.twig', [
-            'categories' => $output,
+            'categories' => $CatRepository->findAll(),
         ]);
     }
     /**
      * @Route("/Category/{slug}", name="app_category")
-     * @param Request $request
      * @return Response
-     */
-
-    public function showCategory(Request $request, Category $category): Response
+    */
+    public function showCategory(Category $category): Response
     {
         return $this->render('categories/single.html.twig',[
             'category' => $category,
