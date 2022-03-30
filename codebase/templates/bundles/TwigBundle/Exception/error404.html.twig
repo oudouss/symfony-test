@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="section pt-5 mt-5 pb-5" style="height:35vh;">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="d-flex justify-content-center align-items-center">
+                <h2 class="fw-bolder mr-3 pr-3 align-top border-right inline-block align-content-center text-danger">
+                    404| 
+                </h2>
+                <div class="inline-block align-middle">
+                    <h1 class="fw-bolder text-danger lead" id="desc">Page not found.</h1>
+                </div>
+            </div>
+            <div class="col-lg-7 text-center pt-5 mt-5">
+                <p>
+                    The requested page couldn't be located. Checkout for any URL
+                    misspelling or <a href="{{ path('app_home') }}">return to the homepage</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
