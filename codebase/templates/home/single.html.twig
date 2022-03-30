@@ -63,7 +63,7 @@
                             {% if user %}
                                 {{ form_row(form.message, {
                                     'row_attr' : {'class' : 'mb-3 form-group col-sm-12' },
-                                    'attr' : {'placeholder': 'Full name' }
+                                    'attr' : {'placeholder': 'Text' }
                                     }) }}
                             {% else %}
                                 {{ form_row(form.userName, {
@@ -90,43 +90,7 @@
     </div>
 </div>
 {% if relatedArticles %}
-<div class="section pb-0">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="heading">Related</h2>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-        {% for relatedArticle in relatedArticles %}
-            <div class="col-lg-12">
-                <div class="post-entry d-md-flex small-horizontal mb-5">
-                    <div class="me-md-5 thumbnail mb-3 mb-md-0">
-                        <img src="{{ relatedArticle.cover }}" alt="{{ relatedArticle.titre }}" class="img-fluid">
-                    </div>
-                    <div class="content">
-                        <div class="post-meta mb-3">
-                            <a href="{{ url('app_category', {'slug': article.category.slug}) }}" class="category">{{ article.category.titre }}</a> &mdash;
-                            <span class="date">{{ article.createdAt | date('M, d Y')}}</span>
-                        </div>
-                        <h2 class="heading"><a href="{{ url('app_article', {'slug': article.slug}) }}">{{ article.titre }}</a></h2>
-                        <p>{{ article.intro}}</p>
-                        <a href="#" class="post-author d-flex align-items-center">
-                            <div class="author-pic">
-                                <img src="{{ article.publisher.avatar }}" alt="Image">
-                            </div>
-                            <div class="text">
-                                <strong>{{ article.publisher.fullName }}</strong>
-                                <span>Author, {{ article.publisher.publishedCount }} published post</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-        </div>
-    </div>
-</div>
+{% include 'partials/_related.html.twig'%}
 {% endif %}
 {% include 'partials/_newsletter.html.twig'%}
 {% endblock %}
