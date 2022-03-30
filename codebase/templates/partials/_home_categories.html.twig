@@ -1,0 +1,43 @@
+<div class="section">
+    <div class="container">
+        <div class="row g-5">
+        {% for homeCategory in homeCategories %}
+            <div class="col-lg-6">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h2 class="h4 fw-bold">{{ homeCategory.titre }}</h2>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                {% for homeCategoryArticle in homeCategory.articles %}
+                    <div class="col-lg-12">
+                        <div class="post-entry d-md-flex xsmall-horizontal mb-5">
+                            <div class="me-md-3 thumbnail mb-3 mb-md-0">
+                                <img src="{{ homeCategoryArticle.cover }}" alt="{{ homeCategoryArticle.titre }}" class="img-fluid">
+                            </div>
+                            <div class="content">
+                                <div class="post-meta mb-1">
+                                    <a href="{{ url('app_category', {'slug': homeCategory.slug}) }}" class="category">{{ homeCategoryArticle.category.titre }}</a>
+                                    &mdash;
+                                    <span class="date">{{ homeCategoryArticle.createdAt | date('M, d Y')}}</span>
+                                </div>
+                                <h2 class="heading"><a href="{{ url('app_article', {'slug': homeCategoryArticle.slug}) }}">{{ homeCategoryArticle.titre }}</a></h2>
+                                <a href="#" class="post-author d-flex align-items-center">
+                                    <div class="author-pic">
+                                        <img src="{{ homeCategoryArticle.publisher.avatar }}" alt="Image">
+                                    </div>
+                                    <div class="text">
+                                        <strong>{{ homeCategoryArticle.publisher.fullName }}</strong>
+                                        <span>{{ homeCategoryArticle.publisher.titre }}</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>

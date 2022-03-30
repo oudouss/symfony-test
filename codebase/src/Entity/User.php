@@ -260,7 +260,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPublishedCount()
     {
-        return count($this->articles);
+        $count = 0;
+        foreach($this->articles as $article ){
+            if ($article->getVisible() === true){ $count ++;}
+        }
+        return $count;
     }
 
 }

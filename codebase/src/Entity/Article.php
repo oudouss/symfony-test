@@ -51,6 +51,16 @@ class Article
     private $visible=false;
 
     /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $trending=false;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $popular=false;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="articles")
      */
     private $category;
@@ -136,6 +146,28 @@ class Article
     public function setVisible(bool $visible): self
     {
         $this->visible = $visible;
+
+        return $this;
+    }
+    public function getTrending(): ?bool
+    {
+        return $this->trending;
+    }
+
+    public function setTrending(bool $trending): self
+    {
+        $this->trending = $trending;
+
+        return $this;
+    }
+    public function getPopular(): ?bool
+    {
+        return $this->popular;
+    }
+
+    public function setPopular(bool $popular): self
+    {
+        $this->popular = $popular;
 
         return $this;
     }

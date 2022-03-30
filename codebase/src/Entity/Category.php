@@ -30,6 +30,11 @@ class Category
     private $slug;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $home;
+
+    /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="category")
      */
     private $articles;
@@ -75,6 +80,17 @@ class Category
     {
         return $this->articles;
     }
+    /**
+     * @return Collection<int, Article>
+     */
+    public function getVisibleArticles(): Collection
+    {
+        $visibleArticles = new ArrayCollection();
+        foreach($this->articles as $article ){
+            if ($article->getVisible() === true){ $visibleArticles[]= $article;}
+        }
+        return $visibleArticles;
+    }
 
     public function addArticle(Article $article): self
     {
@@ -94,6 +110,26 @@ class Category
                 $article->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of home
+     */
+    public function getHome()
+    {
+        return $this->home;
+    }
+
+    /**
+     * Set the value of home
+     *
+     * @return  self
+     */
+    public function setHome($home)
+    {
+        $this->home = $home;
 
         return $this;
     }

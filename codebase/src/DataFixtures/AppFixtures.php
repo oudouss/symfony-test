@@ -62,27 +62,31 @@ class AppFixtures extends Fixture
         $manager->persist($user);
 
         // load categories
-        $categoryTitres= ['Sports', 'Business' , 'Travel', 'Science', 'Fashion'];
+        $categoryTitres= ['Sports', 'Business' , 'Travel', 'Science', 'Fashion', 'Health'];
         for ($i = 1; $i <= self::CATEGORIES; $i++) 
         {
+            $home = (($i % 2 == 0) ? true : false);
             $category = new Category();
             $categoryTitre = $categoryTitres[$i-1];
             $category
             ->setTitre($categoryTitre)
-            ->setSlug((string)$this->slugger->slug((string)$categoryTitre));
+            ->setHome($home)
+            ->setSlug((string)$this->slugger->slug(strtolower((string)$categoryTitre)));
             $manager->persist($category);
             
             // load articles
             for ($j = 1; $j <= rand(1,self::ARTICLES -1) ; $j++)
             {
                 $visible = (($j % 2 == 0) ? true : false);
+                $trending = (($j % 3 == 0) ? true : false);
+                $popular = (($j % 3 != 0) ? true : false);
                 $publisher = (($j % 2 == 0) ? $user : $admin);
                 $rand=\rand(1, 100);
                 $article = new Article();
                 $articleTitre = $this->faker->sentence(\rand(4, 7));
                 $article
                 ->setTitre($articleTitre)
-                ->setSlug((string)$this->slugger->slug((string)$articleTitre))
+                ->setSlug((string)$this->slugger->slug(strtolower((string)$articleTitre)))
                 ->setIntro($this->faker->paragraph(2, false))
                 ->setContent(
                     \sprintf(
@@ -91,11 +95,14 @@ class AppFixtures extends Fixture
                         )
                         )
                 ->setVisible($visible)
+                ->setTrending($trending)
+                ->setPopular($popular)
                 ->setPublisher($publisher)
                 ->setCreatedAt(new DateTimeImmutable())
                 ->setCover('https://picsum.photos/800/514?random='.$rand)
                 ->setCategory($category);
                 $manager->persist($article);
+                
                 // load comments
                 for ($k = 1; $k <= rand(1,self::COMMENTS -1) ; $k++)
                 {

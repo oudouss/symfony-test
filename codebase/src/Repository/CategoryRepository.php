@@ -45,32 +45,33 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Category[] Returns an array of Category objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param int $limit
+     * @return Category[]
+     */
+    public function findVisible($limit)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('c.visible = :val')
+            ->setParameter('val', true)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Category
+    /**
+     * @param int $limit
+     * @return Category[]
+     */
+    public function findHome($limit)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.home = :val')
+            ->setParameter('val', true)
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
+
 }

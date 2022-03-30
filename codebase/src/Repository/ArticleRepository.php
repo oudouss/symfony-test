@@ -47,26 +47,46 @@ class ArticleRepository extends ServiceEntityRepository
     /**
      * @return Article[] Returns an array of Article objects
     */
-    public function findVisible()
+    public function findVisible($limit)
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.visible = :val')
-            ->setParameter('val', 1)
-            ->orderBy('a.createdAt', 'Desc')
+            ->setParameter('val', true)
+            ->setMaxResults($limit)
+            ->orderBy('a.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
 
-    /*
-    public function findOneBySomeField($value): ?Article
+    /**
+     * @return Article[] Returns an array of Trending Article objects
+    */
+    public function findTrending($limit)
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('a.trending = :trending')
+            ->setParameter('trending', true)
+            ->setMaxResults($limit)
+            ->orderBy('a.createdAt', 'DESC')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
+
+    /**
+     * @return Article[] Returns an array of Popular Article objects
     */
+    public function findPopular($limit)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.popular = :popular')
+            ->setParameter('popular', true)
+            ->setMaxResults($limit)
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 }

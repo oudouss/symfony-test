@@ -8,13 +8,8 @@ use App\Entity\Comment;
 use App\Service\Mailer;
 use App\Entity\Category;
 use App\Form\CommentFormType;
-use Symfony\Component\Mime\Email;
-use App\Repository\ArticleRepository;
-use App\Repository\CommentRepository;
-use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,35 +17,46 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
 
     /**
      * @Route("/", name="app_home")
-     * @param ArticleRepository $repository
-     * @param Request $request
      * @return Response
      */
-    public function index(ArticleRepository $repository, Request $request): Response
+    public function index(): Response
     {
-
-        $articles = $repository->findBy(['visible' => true],['createdAt' => 'DESC'], 6);
+        $repo = $this->em->getRepository(Article::class);
+        $categories = $this->em->getRepository(Category::class)->findHome(2);
+        $homeCategories = [];
+        foreach($categories as $category)
+        {
+            $homeCategories[] = [
+                'titre' => $category->getTitre(),
+                'slug' => $category->getSlug(),
+                'articles' => $category->getVisibleArticles(),
+            ];
+        }
         return $this->render('home/index.html.twig',[
-            'articles' => $articles,
+            'articles' => $repo->findVisible(6),
+            'trendingArticles' => $repo->findTrending(4),
+            'popularArticles' => $repo->findPopular(6),
+            'homeCategories' => $homeCategories,
         ]);
     }
 
     /**
-     * @Route("/blog/{slug}", name="app_article")
-     * @param Request $request
-     * @return Response
-     */
-    public function showArticle(
-            Request $request, 
-            Article $article, 
-            EntityManagerInterface $em, 
-            CommentRepository $commentRepo,
-            RequestStack $requestStack,
-            Mailer $mailer
-    ): Response
+    * @Route("/blog/{slug}", name="app_article")
+    *
+    * @param Request $request
+    * @param Article $article
+    * @param RequestStack $requestStack
+    * @param Mailer $mailer
+    * @return Response
+    */
+    public function showArticle( Request $request, Article $article, RequestStack $requestStack, Mailer $mailer ): Response
     {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
@@ -71,11 +77,11 @@ class HomeController extends AbstractController
                 $session->set('usermail', $form->getData()->getUserEmail());
             }
             
-            $em->persist($comment);
+            $this->em->persist($comment);
             $mail=$comment->getUserEmail();
             $message=$comment->getMessage();
             $titre=$article->getTitre();
-            $em->flush();
+            $this->em->flush();
             try {
                 $mailer->notifyAdmin($mail, $message, $titre);
                 $this->addFlash('success', 'Success: Thank you for your feedback! Your comment will be visible once approuved.');
@@ -87,8 +93,8 @@ class HomeController extends AbstractController
         }
         return $this->render('home/single.html.twig',[
             'article' => $article,
-            'relatedArticles' => $article->getCategory()->getArticles(),
-            'comments' => $commentRepo->findBy([
+            'relatedArticles' => $article->getCategory()->getVisibleArticles(),
+            'comments' => $this->em->getRepository(Comment::class)->findBy([
                 'article'=>$article,
                 'visible'=>true,
             ]),
@@ -100,13 +106,12 @@ class HomeController extends AbstractController
     /**
      * @Route("/categories", name="app_categories")
      *
-     * @param CategoryRepository $CatRepository
      * @return Response
     */
-    public function categories(CategoryRepository $CatRepository): Response
+    public function categories(): Response
     {
         return $this->render('categories/list.html.twig', [
-            'categories' => $CatRepository->findAll(),
+            'categories' => $this->em->getRepository(Category::class)->findAll(),
         ]);
     }
     /**

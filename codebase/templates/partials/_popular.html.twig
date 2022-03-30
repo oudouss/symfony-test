@@ -1,0 +1,46 @@
+<div class="section">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center">
+                <h2 class="heading">Most Popular Posts</h2>
+            </div>
+        </div>
+    </div>
+    <div class="most-popular-slider-wrap px-3 px-md-0">
+        <div id="most-popular-nav">
+            <span class="prev" data-controls="prev">Prev</span>
+            <span class="next" data-controls="next">Next</span>
+        </div>
+        <div class="most-popular-slider" id="most-popular-center">
+        {% for popularArticle in popularArticles %}
+            <div class="item">
+                <div class="post-entry d-block small-post-entry-v">
+                    <div class="thumbnail">
+                        <a href="{{ url('app_article', {'slug': popularArticle.slug}) }}">
+                            <img src="{{ popularArticle.cover }}" alt="{{ popularArticle.titre }}" class="img-fluid">
+                        </a>
+                    </div>
+                    <div class="content">
+                        <div class="post-meta mb-1">
+                            <a href="{{ url('app_category', {'slug': popularArticle.category.slug}) }}" class="category">{{ popularArticle.category.titre }}</a>
+                             &mdash;
+                            <span class="date">{{ popularArticle.createdAt | date('M, d Y')}}</span>
+                        </div>
+                        <h2 class="heading mb-3"><a href="{{ url('app_article', {'slug': popularArticle.slug}) }}">{{ popularArticle.titre }}</a></h2>
+                        <p>{{ popularArticle.intro | slice(0, 100)~'...' }}</p>
+                        <a href="#" class="post-author d-flex align-items-center">
+                            <div class="author-pic">
+                                <img src="{{ popularArticle.publisher.avatar }}" alt="Image">
+                            </div>
+                            <div class="text">
+                                <strong>{{ popularArticle.publisher.fullName }}</strong>
+                                <span>{{ popularArticle.publisher.titre }}</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
