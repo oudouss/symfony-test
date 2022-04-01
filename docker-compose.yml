@@ -37,12 +37,14 @@ services:
 
     db_server:
         image: '${DB_SERVER}:${DB_SERVER_VERSION}'
-        # Uncomment if using mariadb or mysql 
-        command: --default-authentication-plugin=mysql_native_password
         container_name: 'db_server'
         ports:
             - '${DB_PORT_OUTSIDE}:${DB_PORT_INSIDE}'
         restart: unless-stopped
+        volumes:
+            - db_data:${DB_VOLUME}
+        networks:
+            - symfony_docker_net
         environment:
         # Uncomment if using mariadb or mysql 
             MYSQL_DATABASE:         '${DB_NAME}'
@@ -53,10 +55,8 @@ services:
             # POSTGRES_DB:          '${DB_NAME}'
             # POSTGRES_USER:        '${DB_USER}'
             # POSTGRES_PASSWORD:    '${DB_PASS}'
-        volumes:
-            - db_data:${DB_VOLUME}
-        networks:
-            - symfony_docker_net
+        # Uncomment if using mariadb or mysql 
+        command: --default-authentication-plugin=mysql_native_password
 
     db_admin:
         image: phpmyadmin/phpmyadmin:5
