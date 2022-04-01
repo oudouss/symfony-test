@@ -88,5 +88,22 @@ class ArticleRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+    /**
+     * @return Article[] Returns an array of Popular Article objects
+    */
+    public function search($query, $visible = null)
+    {
+        $visibility = ($visible) ? $visible : true;
+        return $this->createQueryBuilder('a')
+        ->andWhere('a.titre LIKE :query OR a.intro LIKE :query OR a.content LIKE :query')
+        ->andWhere('a.visible = :visible')
+        ->setParameter('query', '%' . $query . '%')
+        ->setParameter('visible', $visibility)
+        ->orderBy('a.createdAt', 'DESC')
+        ->getQuery()
+        ->getResult()
+    ;
+
+    }
 
 }

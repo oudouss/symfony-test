@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="{{ asset('css/aos.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         {% block stylesheets %}
-            {# {{ encore_entry_link_tags('app') }} #}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
     </head>
@@ -34,13 +34,10 @@
                 <div class="site-navigation">
                     <div class="row">
                         <div class="col-md-6 text-center order-1 order-md-2 mb-3 mb-md-0">
-                            <a href="{{ url('app_home') }}" class="logo m-0 text-uppercase">MagDesign</a>
+                            <a href="{{ url('app_home') }}" class="logo m-0 text-uppercase">SQLI</a>
                         </div>
                         <div class="col-md-3 order-3 order-md-1">
-                            <form action="#" class="search-form">
-                                <span class="icon-search2"></span>
-                                <input type="search" class="form-control" placeholder="Search...">
-                            </form>
+                            {{ render(controller('App\\Controller\\HomeController::searchForm')) }}
                         </div>
                         <div class="col-md-3 text-end order-2 order-md-3 mb-3 mb-md-0">
                             <div class="d-flex">
@@ -116,7 +113,7 @@
             gtag('config', 'UA-23581568-13');
         </script>
         {% block javascripts %}
-                {# {{ encore_entry_script_tags('app') }} #}
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </body>
 </html>

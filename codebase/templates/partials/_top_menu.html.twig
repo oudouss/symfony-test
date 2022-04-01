@@ -2,6 +2,6 @@
     <li><a href="{{ url('app_home') }}">Home</a></li>
     <li class="has-children">
         <a href="#!">Categories</a>
-        {{ render(controller('App\\Controller\\HomeController::categories', {'n': 1})) }}
+        {{ render(controller('App\\Controller\\HomeController::categories')) }}
     </li>
 </ul>

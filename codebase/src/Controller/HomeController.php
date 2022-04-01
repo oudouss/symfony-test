@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Search;
 use DateTimeImmutable;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Service\Mailer;
 use App\Entity\Category;
+use App\Form\SearchFormType;
 use App\Form\CommentFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +27,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="app_home")
      * @return Response
-     */
+    */
     public function index(): Response
     {
         $repo = $this->em->getRepository(Article::class);
@@ -48,13 +50,13 @@ class HomeController extends AbstractController
     }
 
     /**
-    * @Route("/blog/{slug}", name="app_article")
-    *
-    * @param Request $request
-    * @param Article $article
-    * @param RequestStack $requestStack
-    * @param Mailer $mailer
-    * @return Response
+        * @Route("/blog/{slug}", name="app_article")
+        *
+        * @param Request $request
+        * @param Article $article
+        * @param RequestStack $requestStack
+        * @param Mailer $mailer
+        * @return Response
     */
     public function showArticle( Request $request, Article $article, RequestStack $requestStack, Mailer $mailer ): Response
     {
@@ -115,13 +117,38 @@ class HomeController extends AbstractController
         ]);
     }
     /**
-     * @Route("/Category/{slug}", name="app_category")
+     * @Route("/category/{slug}", name="app_category")
      * @return Response
     */
     public function showCategory(Category $category): Response
     {
         return $this->render('categories/single.html.twig',[
             'category' => $category,
+        ]);
+    }
+    /**
+     * @Route("/search", name="app_search")
+     * @return Response
+     */
+    public function searchForm(Request $request): Response
+    {
+        $repo = $this->em->getRepository(Article::class);
+        $search = new Search();
+        $searchForm = $this->createForm(SearchFormType::class, $search);
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) 
+        { 
+            $data=$searchForm->getData();
+            $query=$data->getQuery();
+            $articles=$repo->search($query);
+            return $this->render('search/search_results.html.twig',[
+                'articles' => $articles,
+                'query' => $query,
+                'count' => count($articles),
+            ]);
+        }
+        return $this->renderForm('search/_search_form.html.twig',[
+            'searchForm' => $searchForm
         ]);
     }
 }

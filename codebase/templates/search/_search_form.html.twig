@@ -1,0 +1,9 @@
+{{ form_start(searchForm , {'attr' : {'class' : 'search-form', 'action': path('app_search'), 'method': 'POST'}}) }}
+    <span class="icon-search2"></span>
+    {{ form_widget(searchForm.query, {
+        'attr' : {
+            'class' : 'form-control' ,
+            'placeholder': 'Search...'
+         }
+    }) }}
+{{ form_end(searchForm) }}
