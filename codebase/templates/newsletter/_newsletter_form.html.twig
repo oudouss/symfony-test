@@ -1,0 +1,11 @@
+{{ form_start(newsletterform , {'attr' : {'class' : 'row', 'action': path('app_news_letter_subscribe'), 'method': 'POST' }}) }}
+    {{ form_errors(newsletterform) }}
+    <div class="col-md-8">
+        <div class="mb-3 mb-md-0">
+            {{ form_widget(newsletterform.email, { 'attr' : { 'class' : 'form-control' , 'placeholder': 'Enter your email' } }) }}
+        </div>
+    </div>
+    <div class="col-md-4 d-grid">
+        <input type="submit" class="btn btn-primary" value="Subscribe">
+    </div>
+{{ form_end(newsletterform) }}
